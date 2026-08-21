@@ -57,6 +57,103 @@
     z-index:0;
   }
 
+  /* ============ LOADING SCREEN ============ */
+  html.is-loading, html.is-loading body{overflow:hidden; height:100%;}
+  .loading-screen{
+    position:fixed; inset:0; z-index:999;
+    background:var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    opacity:1; visibility:visible;
+    transition:opacity 0.7s ease, visibility 0.7s ease;
+  }
+  .loading-screen.is-hidden{opacity:0; visibility:hidden; pointer-events:none;}
+  .loading-grid-bg{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(var(--grid-line-strong) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line-strong) 1px, transparent 1px);
+    background-size:88px 88px, 88px 88px, 11px 11px, 11px 11px;
+    pointer-events:none;
+  }
+  .loading-inner{
+    position:relative; z-index:2;
+    text-align:center;
+    padding:0 24px;
+  }
+  .loading-eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    color:var(--brass);
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    margin-bottom:22px;
+  }
+  .loading-eyebrow::before, .loading-eyebrow::after{
+    content:"";
+    width:22px; height:1px;
+    background:var(--brass);
+    display:inline-block;
+  }
+  .loading-name{
+    font-family:'Fraunces', serif;
+    font-optical-sizing:auto;
+    font-weight:600;
+    font-size:clamp(38px, 8vw, 76px);
+    line-height:1.02;
+    letter-spacing:-0.01em;
+    color:var(--text-on-ink);
+  }
+  .loading-name em{
+    font-style:italic;
+    font-weight:400;
+    color:var(--brass-bright);
+  }
+  .loading-sub{
+    margin-top:16px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--text-on-ink-dim);
+  }
+  .loading-sub .dots::after{
+    content:"";
+    display:inline-block;
+    width:1.5em;
+    text-align:left;
+    animation:loading-dots 1.4s steps(4) infinite;
+  }
+  @keyframes loading-dots{
+    0%{content:"";} 25%{content:".";} 50%{content:"..";} 75%{content:"...";} 100%{content:"";}
+  }
+  .loading-bar-track{
+    margin:32px auto 0;
+    width:min(240px, 60vw);
+    height:2px;
+    background:var(--line-on-ink);
+    position:relative;
+    overflow:hidden;
+  }
+  .loading-bar-fill{
+    position:absolute; left:0; top:0; bottom:0;
+    width:0%;
+    background:var(--brass);
+    transition:width .25s ease;
+  }
+  .loading-pct{
+    margin-top:12px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.1em;
+    color:var(--brass);
+  }
+  @media (prefers-reduced-motion: reduce){
+    .loading-sub .dots::after{animation:none; content:"...";}
+  }
+
   .wrap{max-width:var(--sheet-max); margin:0 auto; padding:0 32px; position:relative; z-index:2;}
 
   a{color:inherit; text-decoration:none;}
@@ -384,6 +481,37 @@
     transition:background .3s ease;
   }
   .project-card:hover{background:rgba(201,154,69,0.035);}
+  .project-thumb{
+    margin-bottom:18px;
+    border:1px solid var(--line-on-ink);
+    background:var(--ink-deep);
+    aspect-ratio:16/9;
+    max-width:560px;
+    overflow:hidden;
+    position:relative;
+  }
+  .project-thumb img{
+    width:100%; height:100%;
+    object-fit:contain;
+    object-position:center;
+    display:block;
+    transition:transform .5s ease;
+  }
+  .project-card:hover .project-thumb img{transform:scale(1.02);}
+  .project-thumb.no-image img{display:none;}
+  .project-thumb.no-image::before{
+    content:attr(data-placeholder);
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    text-align:center; padding:18px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--text-on-ink-dim);
+    border:1px dashed var(--line-on-ink);
+    margin:6px;
+  }
   .project-index-no{
     font-family:'IBM Plex Mono', monospace;
     font-size:13px;
@@ -492,6 +620,19 @@
     width:5px; height:5px;
     background:var(--oxblood);
     transform:translateY(-50%) rotate(45deg);
+  }
+  .spec-item.has-logo{
+    padding-left:0;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+  }
+  .spec-item.has-logo::before{display:none;}
+  .skill-logo{
+    width:16px; height:16px;
+    object-fit:contain;
+    flex:none;
+    filter:grayscale(15%);
   }
 
   /* ============ EDUCATION + EXTRA ============ */
@@ -629,6 +770,20 @@
 </head>
 <body>
 
+<!-- ============ LOADING SCREEN ============ -->
+<div class="loading-screen" id="loadingScreen" role="status" aria-live="polite">
+  <div class="loading-grid-bg" aria-hidden="true"></div>
+  <div class="loading-inner">
+    <div class="loading-eyebrow">Sheet 00 · Booting</div>
+    <h1 class="loading-name">Charles<br><em>Dsouza</em></h1>
+    <p class="loading-sub">Loading portfolio<span class="dots"></span></p>
+    <div class="loading-bar-track">
+      <div class="loading-bar-fill" id="loadingBarFill"></div>
+    </div>
+    <div class="loading-pct" id="loadingPct">00%</div>
+  </div>
+</div>
+
 <div class="grid-bg" aria-hidden="true"></div>
 
 <header class="topbar">
@@ -639,6 +794,7 @@
       <a href="#experience">Experience</a>
       <a href="#projects">Projects</a>
       <a href="#skills">Skills</a>
+      <a href="resume.pdf" target="_blank" rel="noopener">Resume</a>
       <a href="#contact">Contact</a>
     </nav>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobileNav">
@@ -654,11 +810,12 @@
     <div class="hero-inner">
       <div class="reveal in">
         <div class="eyebrow">Sheet 00 · Cover</div>
-        <h1 class="hero-name">Charles<br>Ds<em>ouza</em></h1>
+        <h1 class="hero-name">Charles<br><em>Dsouza</em></h1>
         <p class="hero-role">Software Engineer, <strong>Full-Stack &amp; Applied&nbsp;AI</strong></p>
         <p class="hero-tagline">I build production software the way an engineer builds a structure, starting from the foundation with REST APIs, relational schemas, and interfaces, then instrumenting it with the machine-learning systems that make it think.</p>
         <div class="hero-cta">
           <a href="#projects" class="btn btn-primary">View Projects</a>
+          <a href="resume.pdf" target="_blank" rel="noopener" class="btn btn-ghost">View Resume</a>
           <a href="mailto:dsouzacharles26@gmail.com" class="btn btn-ghost">Get in Touch</a>
         </div>
 
@@ -763,6 +920,9 @@
       <div class="project-card">
         <div class="project-index-no">P-01</div>
         <div>
+          <div class="project-thumb" data-placeholder="Add image: images/project-01-empathixai.jpg">
+            <img src="images/project-01-empathixai.jpg" alt="EmpathixAI screenshot" loading="lazy" onerror="this.closest('.project-thumb').classList.add('no-image')">
+          </div>
           <div class="project-name"> EmpathixAI — A Full-Stack Agentic RAG Medical Assistant
             <a class="project-link" href="https://empathix-ai.vercel.app/" target="_blank" rel="noopener">Live Demo ↗</a>
           </div>
@@ -783,6 +943,9 @@
       <div class="project-card">
         <div class="project-index-no">P-02</div>
         <div>
+          <!-- <div class="project-thumb" data-placeholder="Add image: images/project-02-exercise-form.jpg">
+            <img src="images/project-02-exercise-form.jpg" alt="Exercise form classification system screenshot" loading="lazy" onerror="this.closest('.project-thumb').classList.add('no-image')">
+          </div> -->
           <div class="project-name"> AI-Powered Exercise Form Classification and Correction System
             <a class="project-link" href="https://github.com/Charles-Dsouza3/AI-Powered-exercise-form-classification-and-correction" target="_blank" rel="noopener">Repository ↗</a>
           </div>
@@ -797,6 +960,9 @@
       <div class="project-card">
         <div class="project-index-no">P-03</div>
         <div>
+          <!-- <div class="project-thumb" data-placeholder="Add image: images/project-03-llm-from-scratch.jpg">
+            <img src="images/project-03-llm-from-scratch.jpg" alt="LLM From Scratch project screenshot" loading="lazy" onerror="this.closest('.project-thumb').classList.add('no-image')">
+          </div> -->
           <div class="project-name">LLM From Scratch
             <a class="project-link" href="https://github.com/Charles-Dsouza3/LLM-from-scratch" target="_blank" rel="noopener">Repository ↗</a>
           </div>
@@ -827,37 +993,37 @@
       <div class="spec-row">
         <div class="spec-cat">Frontend</div>
         <div class="spec-items">
-          <span class="spec-item">HTML5</span><span class="spec-item">CSS3</span><span class="spec-item">JavaScript ES6+</span><span class="spec-item">React.js</span><span class="spec-item">Next.js (App Router)</span><span class="spec-item">Tailwind CSS</span><span class="spec-item">TypeScript</span>
+          <span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original.svg" alt="" loading="lazy">HTML5</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original.svg" alt="" loading="lazy">CSS3</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" alt="" loading="lazy">JavaScript ES6+</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg" alt="" loading="lazy">React.js</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nextjs/nextjs-original.svg" alt="" loading="lazy">Next.js (App Router)</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/tailwindcss/tailwindcss-original.svg" alt="" loading="lazy">Tailwind CSS</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg" alt="" loading="lazy">TypeScript</span>
         </div>
       </div>
       <div class="spec-row">
         <div class="spec-cat">Backend</div>
         <div class="spec-items">
-          <span class="spec-item">Node.js</span><span class="spec-item">Express.js</span><span class="spec-item">REST API Design</span>
+          <span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original.svg" alt="" loading="lazy">Node.js</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/express/express-original.svg" alt="" loading="lazy">Express.js</span><span class="spec-item">REST API Design</span>
         </div>
       </div>
       <div class="spec-row">
         <div class="spec-cat">Databases</div>
         <div class="spec-items">
-          <span class="spec-item">MongoDB</span><span class="spec-item">MySQL</span><span class="spec-item">PostgreSQL</span>
+          <span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mongodb/mongodb-original.svg" alt="" loading="lazy">MongoDB</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mysql/mysql-original.svg" alt="" loading="lazy">MySQL</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/postgresql/postgresql-original.svg" alt="" loading="lazy">PostgreSQL</span>
         </div>
       </div>
       <div class="spec-row">
         <div class="spec-cat">Languages</div>
         <div class="spec-items">
-          <span class="spec-item">Python</span><span class="spec-item">C++</span><span class="spec-item">Java</span>
+          <span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="" loading="lazy">Python</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/cplusplus/cplusplus-original.svg" alt="" loading="lazy">C++</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg" alt="" loading="lazy">Java</span>
         </div>
       </div>
       <div class="spec-row">
         <div class="spec-cat">AI / ML</div>
         <div class="spec-items">
-          <span class="spec-item">PyTorch</span><span class="spec-item">TensorFlow</span><span class="spec-item">scikit-learn</span><span class="spec-item">Hugging Face</span><span class="spec-item">Pandas</span><span class="spec-item">NumPy</span><span class="spec-item">LangChain</span>
+          <span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/pytorch/pytorch-original.svg" alt="" loading="lazy">PyTorch</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/tensorflow/tensorflow-original.svg" alt="" loading="lazy">TensorFlow</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/scikitlearn/scikitlearn-original.svg" alt="" loading="lazy">scikit-learn</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/simple-icons/simple-icons/master/icons/huggingface.svg" alt="" loading="lazy">Hugging Face</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/pandas/pandas-original.svg" alt="" loading="lazy">Pandas</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/numpy/numpy-original.svg" alt="" loading="lazy">NumPy</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/simple-icons/simple-icons/master/icons/langchain.svg" alt="" loading="lazy">LangChain</span>
         </div>
       </div>
       <div class="spec-row">
         <div class="spec-cat">Tools</div>
         <div class="spec-items">
-          <span class="spec-item">Git</span><span class="spec-item">GitHub</span><span class="spec-item">Vercel</span><span class="spec-item">VS Code</span><span class="spec-item">npm</span>
+          <span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/git/git-original.svg" alt="" loading="lazy">Git</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/github/github-original.svg" alt="" loading="lazy">GitHub</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/vercel/vercel-original.svg" alt="" loading="lazy">Vercel</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/vscode/vscode-original.svg" alt="" loading="lazy">VS Code</span><span class="spec-item has-logo"><img class="skill-logo" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/npm/npm-original-wordmark.svg" alt="" loading="lazy">npm</span>
         </div>
       </div>
     </div>
@@ -923,6 +1089,36 @@
 
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ---- Loading screen ---- */
+  (function(){
+    document.documentElement.classList.add('is-loading');
+    const screen = document.getElementById('loadingScreen');
+    const fill = document.getElementById('loadingBarFill');
+    const pct = document.getElementById('loadingPct');
+
+    const DURATION = 1500; // total loading screen duration, in ms
+    const startTime = performance.now();
+
+    const tick = (now) => {
+      const elapsed = now - startTime;
+      const progress = Math.min((elapsed / DURATION) * 100, 100);
+      fill.style.width = progress + '%';
+      pct.textContent = String(Math.round(progress)).padStart(2, '0') + '%';
+      if (elapsed < DURATION) {
+        requestAnimationFrame(tick);
+      } else {
+        finishLoading();
+      }
+    };
+    requestAnimationFrame(tick);
+
+    function finishLoading(){
+      document.documentElement.classList.remove('is-loading');
+      screen.classList.add('is-hidden');
+      screen.addEventListener('transitionend', () => screen.remove(), { once: true });
+    }
+  })();
 
   const navToggle = document.getElementById('navToggle');
   const mobileNav = document.getElementById('mobileNav');
