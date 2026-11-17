@@ -927,14 +927,14 @@
             <a class="project-link" href="https://empathix-ai.vercel.app/" target="_blank" rel="noopener">Live Demo ↗</a>
           </div>
           <ul class="project-desc-list" style="margin-top: 10px; padding-left: 20px; font-size: 15.5px; line-height: 1.7; color: var(--text-on-ink); max-width: 68ch;">
-            <li style="margin-bottom: 8px;"><strong>Architecture & Stack:</strong> Full-stack app built with React, FastAPI, and Firebase Auth, deployed via Vercel and Render.</li>
-            <li style="margin-bottom: 8px;"><strong>Agentic Triage & RAG:</strong> Engineered a LangGraph routing system that blocks LLM hallucinations on emergency queries via deterministic safety responses. Routine queries use a RAG pipeline (ChromaDB) for source-attributed answers.</li>
-            <li style="margin-bottom: 8px;"><strong>Multimodal Inference:</strong> Integrated Qwen2.5 (text/documents) and Gemma-3 (vision) to reason over user queries, uploaded PDFs, Word files, and images.</li>
-            <li style="margin-bottom: 8px;"><strong>Evaluation & Testing:</strong> Measured RAG faithfulness and context precision using RAGAS. Ensured backend reliability with structured JSON logging, LangSmith tracing, and a fast pytest suite using mocked LLM calls.</li>
-            <li><strong>Product Polish:</strong> Delivered a fully localized (English/Hindi) experience—covering both UI chrome and AI responses—alongside a custom three-theme design system.</li>
+            <li style="margin-bottom: 8px;"><strong>Architecture & Stack:</strong> Full-stack app built with React, FastAPI, LangChain, and Firebase Auth, deployed live on Vercel and Render.</li>
+            <li style="margin-bottom: 8px;"><strong>Agentic Triage & RAG:</strong> A LangGraph workflow classifies each message as emergency, health question, or off-topic. Emergency and off-topic messages get fixed, pre-written replies in English or Hindi, so safety-critical wording is never generated. Health questions retrieve context from 116 chunks of medical reference text in ChromaDB before the LLM answers.</li>
+            <li style="margin-bottom: 8px;"><strong>Multimodal Analysis:</strong> Uploaded PDFs, Word files, and text files are extracted and run through the same triage and retrieval pipeline, while images go to a vision-capable LLM.</li>
+            <li style="margin-bottom: 8px;"><strong>Evaluation & Testing:</strong> Quality measured with a 25-question RAGAS evaluation (0.92 answer relevancy, 0.90 context recall, 0.89 context precision, 0.80 faithfulness). 20 pytest tests with mocked LLM calls cover the API and per-user data isolation.</li>
+            <li><strong>Performance:</strong> About 3.2 s median response time on free-tier hosting.</li>
           </ul>
           <div class="project-tags">
-            <span class="tag">Python</span><span class="tag">FastAPI</span><span class="tag">React</span><span class="tag">LangGraph / LangChain</span><span class="tag">RAG + ChromaDB</span><span class="tag">Multimodal LLMs</span><span class="tag">RAGAS Evaluation</span><span class="tag">Firebase Auth</span>
+            <span class="tag">Python</span><span class="tag">OpenAI</span><span class="tag">FastAPI</span><span class="tag">React</span><span class="tag">LangGraph / LangChain</span><span class="tag">RAG + ChromaDB</span><span class="tag">Multimodal LLMs</span><span class="tag">RAGAS Evaluation</span><span class="tag">Firebase Auth</span>
           </div>
         </div>
       </div>
